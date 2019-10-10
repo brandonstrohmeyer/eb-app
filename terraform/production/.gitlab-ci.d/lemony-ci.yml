@@ -1,0 +1,30 @@
+#
+# Use "extends:" as an alternate to a yaml anchor in order 
+# to deep merge this configuration file with gitlab-ci.yml. This
+# is excessive for a single-environment setup, but when dealing
+# with multiple environments it increases readability to break them
+# out into individual files like this. Be sure to include the "plan"
+# job as a dependancy on the apply job so .tfplan files are passed
+# as artifacts.
+#
+
+validate-lemony:
+  extends: .validate
+  stage: validate
+  variables:
+    DIR: production/lemony
+
+plan-lemony:
+  extends: .plan
+  dependencies:
+    - validate-lemony
+  variables:
+    DIR: production/lemony
+    PLAN: lemony
+
+apply-lemony:
+  extends: .apply
+  dependencies:
+    - plan-lemony
+  variables:
+    PLAN: lemony
