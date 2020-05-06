@@ -1,4 +1,4 @@
-# lemony
+# eb-app
 Automatically deploys a web app in AWS.
 
 Requires:
