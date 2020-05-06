@@ -1,0 +1,55 @@
+{
+    "variables": {
+      "aws_access_key": "",
+      "aws_secret_key": ""
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-west-2",
+      "subnet_id": "{{user `build_subnet_id`}}",
+      "vpc_id": "{{user `build_vpc_id`}}",
+      "associate_public_ip_address": true,
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "amzn-ami-hvm*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["amazon"],
+        "most_recent": true
+      },
+      "instance_type": "t2.micro",
+      "ssh_username": "ec2-user",
+      "ami_name": "eb-web-app-{{timestamp}}"
+    }],
+    "provisioners": [
+      {
+        "type": "file",
+        "source": "./app/app.js",
+        "destination": "/tmp/app.js"
+      },
+      {
+      "type": "shell",
+      "inline_shebang": "/bin/bash -e",
+      "inline": [
+        "sleep 30",
+        "sudo yum update -y",
+        "sudo yum install git make gcc -y",
+        "sudo mkdir -p /var/app",
+        "sudo chown ec2-user /var/app",
+        "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash",
+        ". ~/.nvm/nvm.sh",
+        "nvm install node",
+        "npm install --prefix /var/app express --save",
+        "npm install pm2 -g",
+        "sudo mv /tmp/app.js /var/app",
+        "pm2 start /var/app/app.js",
+        "sudo ln -s /sbin/chkconfig /usr/bin/",
+        "sudo ln -s /sbin/initctl /usr/bin/",
+        "sudo env PATH=$PATH:/home/ec2-user/.nvm/versions/node/v14.2.0/bin /home/ec2-user/.nvm/versions/node/v14.2.0/lib/node_modules/pm2/bin/pm2 startup amazon -u ec2-user --hp /home/ec2-user",
+        "pm2 save"
+      ]
+    }]
+  }
