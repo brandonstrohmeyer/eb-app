@@ -11,7 +11,7 @@ def InitAndApply(dir):
     output = t.output()
 
     if ret == 0:
-        return dict(output),
+        return output
     else:
         raise Exception("Terraform failed to Apply", err)
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     # Build app AMI via Packer
     BuildAMI(
         './packer/eb-app-ami.json',
-        { 'build_vpc_id': buildOutputs[0]['build_vpc']['value'], 'build_subnet_id': buildOutputs[0]['build_subnet']['value'] }
+        { 'build_vpc_id': buildOutputs['build_vpc']['value'], 'build_subnet_id': buildOutputs['build_subnet']['value'] }
         )
 
     # Run Terraform Init and Apply on the 'prod' environment
