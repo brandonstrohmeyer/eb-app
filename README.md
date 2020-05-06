@@ -17,6 +17,11 @@ The 'production' environment hosts an ALB which balances incoming HTTP requests 
 
 All AWS infrastructure is built via Terraform.
 
+## Usage
+1. Clone this repository.
+2. Export standard AWS API credentials to the local environment.
+3. Run deploy.py
+
 ## Output Sample
 https://gist.github.com/brandonstrohmeyer/dd11f19c64fb2e4e64b2461802aa79ee
 
