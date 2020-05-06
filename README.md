@@ -17,6 +17,6 @@ The 'production' environment hosts an ALB which balances incoming HTTP requests 
 
 All AWS infrastructure is built via Terraform.
 
-# Output Sample
+## Output Sample
 https://gist.github.com/brandonstrohmeyer/dd11f19c64fb2e4e64b2461802aa79ee
 
